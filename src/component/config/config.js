@@ -1,0 +1,1 @@
+export const root_url = 'https://server-db-eng-foe.vercel.app/';
