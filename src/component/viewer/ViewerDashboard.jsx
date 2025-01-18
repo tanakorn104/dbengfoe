@@ -214,7 +214,7 @@ function ViewerDashboard() {
             token: sessionStorage.getItem('acctoken')
 
         };
-        const getallmaincapdata = axios.post(root_url, JSON.stringify(requestDataOverview), {
+        const getallmaincapdata = api.post("/", JSON.stringify(requestDataOverview), {
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -229,7 +229,7 @@ function ViewerDashboard() {
             token: sessionStorage.getItem('acctoken')
 
         };
-        const getallprojectdata = axios.post(root_url, JSON.stringify(requestDataProject), {
+        const getallprojectdata = api.post("/", JSON.stringify(requestDataProject), {
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -244,7 +244,7 @@ function ViewerDashboard() {
             token: sessionStorage.getItem('acctoken')
 
         };
-        const getallmaincap = axios.post(root_url, JSON.stringify(requestmaincap), {
+        const getallmaincap = api.post("/", JSON.stringify(requestmaincap), {
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -259,7 +259,7 @@ function ViewerDashboard() {
             token: sessionStorage.getItem('acctoken')
 
         };
-        const getallcurrentcap = axios.post(root_url, JSON.stringify(requestDatatempcap), {
+        const getallcurrentcap = api.post("/", JSON.stringify(requestDatatempcap), {
             headers: {
                 'Content-Type': 'application/json'
             },

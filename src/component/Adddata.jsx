@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Header from "./Header";
 import LinkPage from "./LinkPage";
 import { root_url } from "./config/config";
+import api from "./tool/AxiosInstance";
 function Adddata(){
     const navigate = useNavigate();
     const [response, setResponse] = useState(null);
@@ -143,7 +144,7 @@ const prevententersend = (event)=>{
         token: sessionStorage.getItem('acctoken')
     };
     // console.log((requestData));
-    await axios.post(root_url,JSON.stringify(requestData),{
+    await api.post("/",JSON.stringify(requestData),{
             headers:{
                 'Content-Type':'application/json'
             }

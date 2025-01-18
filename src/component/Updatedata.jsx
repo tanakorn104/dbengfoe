@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Header from "./Header";
 import LinkPage from "./LinkPage";
 import { root_url } from "./config/config";
+import api from "./tool/AxiosInstance";
 function UpdateData() {
     const navigate = useNavigate();
     const location = useLocation();
@@ -47,7 +48,7 @@ function UpdateData() {
             token: sessionStorage.getItem('acctoken')
         };
         // console.log((requestData));
-        axios.post(root_url, JSON.stringify(requestData), {
+        api.post("/",JSON.stringify(requestData), {
             headers: {
                 'Content-Type': 'application/json'
             }
