@@ -13,6 +13,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { root_url } from "../config/config";
+import api from "../tool/AxiosInstance";
 function ViewerDashboard() {
     const location = useLocation();
     const { datalocation } = location.state || {};
@@ -216,7 +217,8 @@ function ViewerDashboard() {
         const getallmaincapdata = axios.post(root_url, JSON.stringify(requestDataOverview), {
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
+            withCredentials:true
         }
         )
         const requestDataProject = {
@@ -230,7 +232,8 @@ function ViewerDashboard() {
         const getallprojectdata = axios.post(root_url, JSON.stringify(requestDataProject), {
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
+            withCredentials:true
         }
         )
         const requestmaincap = {
@@ -244,7 +247,8 @@ function ViewerDashboard() {
         const getallmaincap = axios.post(root_url, JSON.stringify(requestmaincap), {
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
+            withCredentials:true
         }
         )
         const requestDatatempcap = {
@@ -258,7 +262,8 @@ function ViewerDashboard() {
         const getallcurrentcap = axios.post(root_url, JSON.stringify(requestDatatempcap), {
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
+            withCredentials:true
         }
         )
 

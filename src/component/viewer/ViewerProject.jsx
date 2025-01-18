@@ -7,7 +7,8 @@ import html2pdf from 'html2pdf.js';
 import { v4 as uuidv4 } from 'uuid';
 import { Link } from "react-router-dom";
 import { data } from "autoprefixer";
-import { root_url } from "../config/config";
+import LoadingObj from "../../assets/LoadingObj";
+import api from "../tool/AxiosInstance";
 function ViewerProject() {
     const location = useLocation();
     const { datalocation } = location.state || '';
@@ -77,6 +78,7 @@ function ViewerProject() {
                 running += 1;
             }
         })
+        
         // console.log(succ);
         // console.log(wait);
         // console.log(running);
@@ -86,7 +88,7 @@ function ViewerProject() {
         countsuccessproject.current=succ;
         countwaitproject.current=wait;
         countrunningproject.current=running;
-        console.log(">>>>>>>>"+forrerenderpage);
+        // console.log(">>>>>>>>"+forrerenderpage);
         // setcountsuccessproject(succ);
         // setcountwaitproject(wait)
         // setcountrunningproject(running);
@@ -126,14 +128,14 @@ function ViewerProject() {
                     type: datalocation[1],
                     organiz: datalocation[2],
                 },
-                token: sessionStorage.getItem('acctoken')
 
             };
             // console.log((requestData));
-            const getalldata = axios.post(root_url, JSON.stringify(requestData), {
+            const getalldata =api.post("/", JSON.stringify(requestData), {
                 headers: {
                     'Content-Type': 'application/json'
-                }
+                },
+                withCredentials:true
             }
             )
                 // .then(response => { countproject(response.data.data);console.log(response.data.data) })
@@ -152,14 +154,14 @@ function ViewerProject() {
                     type: datalocation[1],
                     organiz: datalocation[2],
                 },
-                token: sessionStorage.getItem('acctoken')
 
             };
             // console.log((requestData));
-            const getoverviewdataforeachorganiz = axios.post(root_url, JSON.stringify(requestData2), {
+            const getoverviewdataforeachorganiz = api.post("/", JSON.stringify(requestData2), {
                 headers: {
                     'Content-Type': 'application/json'
-                }
+                },
+                withCredentials:true
             }
             )
                 // .then(response => response.data.data)//setHeadOverviewtableresdata(response.data.headtable); setDataOverviewresdata(response.data.data); setLoadingpage(false); countproject(response.data.data)
@@ -220,8 +222,8 @@ function ViewerProject() {
         return (
             <>
                 <Header />
-                {sessionStorage.getItem('role') == 'admin' ? <LinkPage /> : ''}
-                <p className='w-full h-full flex justify-center items-center'>loading</p>
+                {/* {sessionStorage.getItem('role') == 'admin' ? <LinkPage /> : ''} */}
+                <LoadingObj/>
             </>
         )
     }
@@ -229,7 +231,7 @@ function ViewerProject() {
         return (
             <>
                 <Header />
-                {sessionStorage.getItem('role') == 'admin' ? <LinkPage /> : ''}
+                {/* {sessionStorage.getItem('role') == 'admin' ? <LinkPage /> : ''} */}
                 <p className="w-full flex justify-center">ยังไม่มีข้อมูลโครงการ</p>
                 <a onClick={()=>{navigate(-1)}} className="w-full flex justify-center text-red-500 hover:text-red-300 cursor-pointer">กลับ</a>
     
@@ -239,183 +241,217 @@ function ViewerProject() {
     return (
         <>
             <Header />
-            {sessionStorage.getItem('role') == 'admin' ? <LinkPage /> : ''}
+            {/* {sessionStorage.getItem('role') == 'admin' ? <LinkPage /> : ''} */}
             <div className="w-full flex flex-col justify-center items-center ">
-                <div className="w-5/6 flex flex-row items-end justify-between mt-5 border-b pb-2">
-                    <div className="flex flex-col ">
-                        <p className="text-xl">ปีงบประมาณ {datalocation[0]}</p>
-                        <div className="flex flex-row">
-                            <p className="mr-4">ประเภท: <span className="font-light">{datalocation[1]}</span></p>
-                            <p className="mr-4">องค์กร: <span className="font-light">{datalocation[2]}</span></p>
+                <div className="w-5/6 flex flex-col md:flex-row items-end justify-between mt-5 border-b pb-2">
+                    <div className="flex flex-col w-full ">
+                        <p className="text-xl  flex justify-center md:justify-start  w-full " >ปีงบประมาณ {datalocation[0]}</p>
+                        <div className="flex flex-col md:flex-row">
+                            <p className="mr-4 text-sm">ประเภท: <span className="font-light ">{datalocation[1]}</span></p>
+                            <p className="mr-4 text-sm">องค์กร: <span className="font-light">{datalocation[2]}</span></p>
                         </div>
                     </div>
-                    <div className="flex flex-row justify-end">
-                        <p className="mr-4">สำเร็จ: <span className="text-green-400 font-light ">{countsuccessproject.current}</span></p>
-                        <p className="mr-4">รอ: <span className="font-light text-red-400 ">{countwaitproject.current}</span></p>
-                        <p className="mr-4">กำลังดำเนินการ: <span className="font-light text-blue-400" >{countrunningproject.current}</span></p>
-                        <p className="mr-4">รวม: <span className="font-light ">{countsuccessproject.current + countwaitproject.current + countrunningproject.current}</span></p>
+                    <div className="flex flex-row md:flex-row justify-start md:justify-end  w-full">
+                        <p className="mr-4 text-sm flex justify-center">สำเร็จ: <span className=" ml-2 text-green-400  font-light ">{countsuccessproject.current}</span></p>
+                        <p className="mr-4 text-sm flex justify-center">รอ: <span className="ml-2 font-light text-red-400 ">{countwaitproject.current}</span></p>
+                        <p className="mr-4 text-sm flex justify-center">ดำเนินการ: <span className="ml-2 font-light text-blue-400" >{countrunningproject.current}</span></p>
+                        <p className="mr-4 text-sm flex justify-center">รวม: <span className="ml-2 font-light ">{countsuccessproject.current + countwaitproject.current + countrunningproject.current}</span></p>
                     </div>
                 </div>
-                <div className="w-5/6 h-6 flex flex-row justify-between">
-                <p className="w-2/3 h-6 text-sm font-light  flex justify-start items-center truncate" >ณ วันที่ {formattedDate}</p>
-                <p className="w-full h-6 text-sm font-light  flex justify-end items-center truncate" >ทั้งหมด {numberWithCommas(maindatastate.dataoverviewresdata[0][3])} บาท   คงเหลือ {numberWithCommas(maindatastate.dataoverviewresdata[0][4])} บาท</p>                    
+
+                <div className="w-5/6 h-auto min-h-6 flex flex-col md:flex-row justify-between">
+                    <p className="text-xs md:text-sm w-full md:w-2/3 h-6  font-light  flex justify-start md:justify-start items-center truncate" >ณ วันที่ {formattedDate}</p>
+                    <p className="text-xs md:text-sm w-full h-6  font-light  flex justify-start md:justify-end items-center truncate" >ทั้งหมด {numberWithCommas(maindatastate.dataoverviewresdata[0][3])} บาท   คงเหลือ {numberWithCommas(maindatastate.dataoverviewresdata[0][4])} บาท</p>
                 </div>
-                <table className="w-5/6  bg-blue-200 flex flex-col">
-                    <thead>
-                        <tr className="w-full h-10  bg-gray-200 flex flex-row justify-between">
-                            <th className="font-normal w-1/2 mr-0  text-end pl-4 flex flex-row  items-center">ชื่อโครงการ</th>
-                            <div className="w-1/2  flex flex-row justify-end items-center">
-                                <th className="font-normal w-1/3 mr-0  text-end pl-4 flex flex-row justify-end items-center">งบประมาณ</th>
-                                <th className="font-normal w-1/3 mr-0  text-end pl-4 flex flex-row justify-end items-center">วันที่จัด</th>
-                                <th className="font-normal w-1/3 mr-0  text-end pl-4 flex flex-row justify-end items-center"></th>
+
+                <div className="w-5/6  flex flex-col">
+                    <div>
+                        <div className="w-full h-10  bg-gray-200 flex flex-row justify-between">
+                            <div className="font-normal w-3/5  mr-0  text-end pl-4 flex flex-row  items-center">ชื่อโครงการ</div>
+                            <div className="w-2/5 md:w-1/2  h-full hidden md:block ">
+                                <div className="w-2/3 h-full   flex flex-row justify-end items-center">
+                                    <div className="font-normal w-full mr-0text-end pl-4 flex flex-row justify-end items-center">งบประมาณ</div>
+                                    <div className="font-normal w-full mr-0  text-end pl-4 flex flex-row justify-end items-center">วันที่จัด</div>
+                                </div>
+                                <div className="flex felx-row justify-center w-1/3">
+                                    <div className="font-light w-1/2 h-10 border-b  text-start pl-4 flex justify-start items-center"></div>
+                                    <div className="font-light w-1/2 h-10 border-b  text-start pl-4 flex justify-start items-center"></div>
+                                </div>
                             </div>
-                        </tr>
-                    </thead>
-                    <tbody>
+                        </div>
+                    </div>
+                    <div>
+
                         {maindatastate.dataresdata.map((list, index) => {
                             if (list[9] == 'done') {
 
                                 return (
-                                    <tr key={uuidv4()} className="w-full   flex flex-row justify-between bg-white  border-l-8 border-lime-400 ">
-                                        <td className="w-1/2 min-h-10 font-light   text-start pl-6 flex flex-row  items-center border-b "><span className="truncate">{list[3]}</span></td>
-                                        <div className="w-1/2  flex flex-row justify-end items-center">
-                                            <td className="font-light w-1/3  h-full border-b  text-start pl-4  flex justify-end items-center truncate ">{numberWithCommas(list[5]!=null||list[5]!=''?list[5]:list[4])}</td>
-                                            <td className="font-light w-1/3 min-h-10 border-b  text-start pl-4  flex justify-end items-center truncate ">
-                                            <details className="w-full">
-                                                <summary className=" flex cursor-pointer justify-end  w-full items-center  hover:text-gray-500">
-                                                {
-                                                (list[7]!=null && list[7]!=''&&list[7] !=undefined)?(
-                                                   
-                                                        <p>{timestmptostrdate(JSON.parse(list[7])[0])}</p>
-                                                    
+                                    <div key={uuidv4()} className="w-full bg-white flex flex-row justify-around   border-l-8 border-lime-400 ">
+                                        <div className="w-3/5 md:w-1/2  font-light min-h-10   text-start pl-6 flex flex-row  items-center border-b "><span className="truncate">{list[3]}</span></div>
+                                        <div className="w-2/5 md:w-1/2  flex flex-row justify-center items-center">
+
+                                            <div className="hidden md:block w-full h-full ">
+                                                <div className="flex flex-row w-full  h-full">
+
+                                                    <div className="font-light  w-full h-full  border-b  text-start pl-4  flex justify-end items-center truncate "><p>{numberWithCommas(list[5] != null || list[5] != '' ? list[5] : list[4])}</p></div>
+
+                                                    <div className=" font-light w-full min-h-10  border-b  text-start pl-4  flex justify-end items-center truncate ">
+                                                        <details className="w-full ">
+                                                            <summary className=" flex cursor-pointer justify-end  w-full items-center  hover:text-gray-500">
+                                                                {
+                                                                    (list[7] != null && list[7] != '' && list[7] != undefined) ? (
+
+                                                                        <p>{(JSON.parse(list[7])[0])}</p>
+
+
+                                                                    ) : "ไม่มีข้อมูล"
+
+
+
+                                                                }
+                                                            </summary>
+
+                                                            {
+                                                                (list[7] != null && list[7] != '' && list[7] != undefined) ? (
+                                                                    JSON.parse(list[7]).slice(1).map((date, index) => {
+                                                                        return <p className=" flex  justify-end  w-full items-center">{(date)}</p>
+                                                                    })
+
+                                                                ) : ''
+
+
+
+                                                            }
+                                                        </details>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <div className="flex flex-row h-full w-full justify-center md:w-1/3 items-center">
+                                                <div className="font-light w-full h-full border-b  text-end pl-4 flex justify-center items-center  text-black hover:text-gray-500 cursor-pointer">
+                                                    <a onClick={() => { handleinformationproject({ fiscalyear: datalocation[0], type: datalocation[1], organiz: datalocation[2], title: list[3], projectvalue: (list[4]), eventdate: list[7], actused: list[5], total: list[6], comdocdate: list[8], disbursement: list[10] }) }}>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                                                        </svg>
+                                                    </a>
+                                                </div>
                                                 
-                                                ):(timestmptostrdate(null))
-                                
-                            
-                                                    
-                                                }
-                                               </summary>
-                                                
-                                                {
-                                                (list[7]!=null && list[7]!=''&&list[7] !=undefined)?(
-                                                    JSON.parse(list[7]).slice(1).map((date,index)=>{
-                                                        return <p className=" flex  justify-end  w-full items-center">{timestmptostrdate(date)}</p>
-                                                    })
-                                                
-                                                ):''
-                                
-                            
-                                                    
-                                            }
-                                            </details>
-                                            </td>
-                                            <div className="flex h-full flex-row justify-center w-1/3 items-center">
-                                                <td className="font-light min-h-10 w-full h-full border-b  text-start pl-4 flex justify-center items-center  text-black hover:text-gray-500 cursor-pointer">
-                                                <a onClick={()=>{handleinformationproject({ fiscalyear: datalocation[0], type: datalocation[1], organiz: datalocation[2], title: list[3], projectvalue: (list[4]), eventdate: list[7],actused:list[5],total:list[6],comdocdate:list[8],disbursement:list[10],softskilltype:list[11]})}}>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                                      <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
-                                                    </svg>       
-                                                </a>                            
-                                                </td>
-                                              
                                             </div>
                                         </div>
-                                    </tr>
+                                    </div>
                                 )
                             } else if (list[9] == 'wait') {
 
                                 return (
 
-                                    <tr key={uuidv4()} className="w-full   flex flex-row justify-between bg-white  border-l-8 border-red-400">
-                                        <td className="min-h-10 w-1/2 font-light   text-start pl-6 border-b flex flex-row   items-center "><span className="truncate">{list[3]}</span></td>
-                                        <div className="w-1/2  flex flex-row justify-center items-center">
-                                            <td className="font-light w-1/3 h-full  border-b  text-start pl-4 flex justify-end items-center truncate">{numberWithCommas(list[4])}</td>
-                                            <td className="font-light min-h-10 w-1/3  border-b   pl-4 flex  flex-col justify-center items-center truncate">
-                                            <details className="w-full ">
-                                                <summary className=" flex cursor-pointer justify-end  w-full items-center  hover:text-gray-500">
-                                                {
-                                                (list[7]!=null && list[7]!=''&&list[7] !=undefined)?(
-                                                   
-                                                        <p>{timestmptostrdate(JSON.parse(list[7])[0])}</p>
-                                                    
+                                    <div key={uuidv4()} className="w-full  flex flex-row justify-between bg-white  border-l-8 border-red-400 ">
+                                        <div className="w-3/5 md:w-1/2 font-light min-h-10   text-start pl-6 flex flex-row  items-center border-b "><span className="truncate">{list[3]}</span></div>
+                                        <div className="w-2/5 md:w-1/2 flex flex-row justify-end items-center">
+
+                                            <div className="hidden md:block h-full w-full ">
+                                                <div className="flex flex-row h-full w-full">
+                                                    <div className="font-light  w-full h-full border-b  text-start pl-4  flex justify-end items-center truncate ">{numberWithCommas(String(list[5]).length!=0 ? list[5] : list[4])}</div>
+
+                                                    <div className=" font-light w-full min-h-10  border-b  text-start pl-4  flex justify-end items-center truncate ">
+                                                        <details className="w-full">
+                                                            <summary className=" flex cursor-pointer justify-end  w-full items-center  hover:text-gray-500">
+                                                                {
+                                                                    (list[7] != null && list[7] != '' && list[7] != undefined) ? (
+
+                                                                        <p>{(JSON.parse(list[7])[0])}</p>
+
+
+                                                                    ) :"ไม่มีข้อมูล"
+
+
+
+                                                                }
+                                                            </summary>
+
+                                                            {
+                                                                (list[7] != null && list[7] != '' && list[7] != undefined) ? (
+                                                                    JSON.parse(list[7]).slice(1).map((date, index) => {
+                                                                        return <p className=" flex  justify-end  w-full items-center">{(date)}</p>
+                                                                    })
+
+                                                                ) : ''
+
+
+
+                                                            }
+                                                        </details>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <div className="flex flex-row h-full w-full justify-center md:w-1/3 items-center border-b">
                                                 
-                                                ):(timestmptostrdate(null))
-                                
-                            
-                                                    
-                                                }
-                                               </summary>
-                                                
-                                                {
-                                                (list[7]!=null && list[7]!=''&&list[7] !=undefined)?(
-                                                    JSON.parse(list[7]).slice(1).map((date,index)=>{
-                                                        return <p className=" flex  justify-end  w-full items-center">{timestmptostrdate(date)}</p>
-                                                    })
-                                                
-                                                ):''
-                                
-                            
-                                                    
-                                            }
-                                            </details>
-                                            </td>
-                                            <div className=" h-full flex flex-row justify-between w-1/3 border-b ">
-                                               
                                             </div>
                                         </div>
-                                    </tr>
+                                    </div>
                                 )
                             } else {
 
                                 return (
 
-                                    <tr key={uuidv4()} className="w-full  flex flex-row justify-between bg-white  border-l-8 border-blue-400">
-                                        <td className="w-1/2 min-h-10 font-light   text-start pl-6 border-b flex flex-row   items-center "><span className="truncate">{list[3]}</span></td>
-                                        <div className="w-1/2  flex flex-row justify-center items-center">
-                                            <td className="font-light w-1/3 h-full border-b  text-start pl-4 flex justify-end items-center truncate">{numberWithCommas(list[4])}</td>
-                                            <td className="font-light w-1/3 min-h-10 border-b  text-start pl-4 flex justify-end items-center truncate">
-                                            <details className="w-full">
-                                                <summary className=" flex cursor-pointer justify-end  w-full items-center   hover:text-gray-500">
-                                                {
-                                                (list[7]!=null && list[7]!=''&&list[7] !=undefined)?(
-                                                   
-                                                        <p>{timestmptostrdate(JSON.parse(list[7])[0])}</p>
-                                                    
+                                    <div key={uuidv4()} className="w-full  flex flex-row justify-between bg-white  border-l-8 border-blue-400 ">
+                                        <div className="w-3/5 md:w-1/2 font-light min-h-10   text-start pl-6 flex flex-row  items-center border-b "><span className="truncate">{list[3]}</span></div>
+                                        <div className="w-2/5 md:w-1/2   flex flex-row justify-end items-center">
+
+                                            <div className="hidden md:block w-full h-full ">
+                                                <div className="flex flex-row w-full h-full">
+                                                    <div className="font-light  w-full h-full border-b  text-start pl-4  flex justify-end items-center truncate ">{numberWithCommas(String(list[5]).length!=0? list[5] : list[4])}</div>
+
+                                                    <div className=" font-light w-full min-h-10  border-b  text-start pl-4  flex justify-end items-center truncate ">
+                                                        <details className="w-full">
+                                                            <summary className=" flex cursor-pointer justify-end  w-full items-center  hover:text-gray-500">
+                                                                {
+                                                                    (list[7] != null && list[7] != '' && list[7] != undefined) ? (
+
+                                                                        <p>{(JSON.parse(list[7])[0])}</p>
+
+
+                                                                    ) : "ไม่มีข้อมูล"
+
+
+
+                                                                }
+                                                            </summary>
+
+                                                            {
+                                                                (list[7] != null && list[7] != '' && list[7] != undefined) ? (
+                                                                    JSON.parse(list[7]).slice(1).map((date, index) => {
+                                                                        return <p className=" flex  justify-end  w-full items-center">{(date)}</p>
+                                                                    })
+
+                                                                ) : ''
+
+
+
+                                                            }
+                                                        </details>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <div className="flex flex-row h-full w-full justify-center md:w-1/3 items-center border-b">
                                                 
-                                                ):(timestmptostrdate(null))
-                                
-                            
-                                                    
-                                                }
-                                               </summary>
-                                                
-                                                {
-                                                (list[7]!=null && list[7]!='' && list[7]!=undefined)?(
-                                                    JSON.parse(list[7]).slice(1).map((date,index)=>{
-                                                        return <p className=" flex  justify-end  w-full items-center">{timestmptostrdate(date)}</p>
-                                                    })
-                                                
-                                                ):''
-                                
-                            
-                                                    
-                                            }
-                                            </details>
-                                            </td>
-                                            <div className="h-full flex felx-row justify-center w-1/3 border-b ">
                                             </div>
                                         </div>
-                                    </tr>
+                                    </div>
                                 )
 
                             }
 
                         })}
 
-                    </tbody>
+                    </div>
 
 
-                </table>
+                </div>
 
             </div>
         </>

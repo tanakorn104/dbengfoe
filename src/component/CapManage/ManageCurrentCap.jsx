@@ -6,7 +6,8 @@ import axios from "axios";
 import html2pdf from 'html2pdf.js';
 import { v4 as uuidv4 } from 'uuid';
 import { Link } from "react-router-dom";
-import { root_url } from "../config/config";
+import LoadingObj from "../../assets/LoadingObj";
+import api from "../tool/AxiosInstance";
 function ManageCurrentCap() {
     const location = useLocation();
     const { datalocation } = location.state || 'none';
@@ -59,8 +60,6 @@ function ManageCurrentCap() {
             typecap:null
         },
     })
-    const [forrerenderpage, setforrerenderpage] = useState(0);
-
     const now = new Date();
     const options = {
         year: 'numeric',
@@ -76,23 +75,7 @@ function ManageCurrentCap() {
     const formattedDate = new Intl.DateTimeFormat('th-TH', options).format(now);
     const handleSubmit = async(event) => {
         event.preventDefault(); // ป้องกันการรีเฟรชหน้า
-        // เก็บข้อมูลฟอร์มใน state
-        // sessionStorage.setItem('statusInsertOrUpdateData','insert');
-        const requestData = {
-            type:"insertrecipientscurrentcap",//sessionStorage.getItem('statusInsertOrUpdateData')
-            data:maindatastate.dataresdata,
-            token: sessionStorage.getItem('acctoken')
-        };
-        // console.log((requestData));
-        await axios.post(root_url,JSON.stringify(requestData),{
-                headers:{
-                    'Content-Type':'application/json'
-                }
-            }
-        )
-        .then(response => {})
-        .catch(err => console.error('Error posting data', err)); // จัดการข้อผิดพลาด
-    
+
         // console.log('Form submitted with data:', formData);
         
       };
@@ -107,10 +90,6 @@ function ManageCurrentCap() {
 
 
         }
-        // console.log('headtableresdata')
-        // console.log(headtableresdata)
-        // console.log('dataresdata')
-        // console.log(dataresdata[index])
         const objdata = Object.fromEntries(objprelist);
         return objdata;
     }
@@ -131,13 +110,13 @@ function ManageCurrentCap() {
                 fiscalyear: datalocation.fiscalyear,
                 typecap:datalocation.typecap
             },
-            token: sessionStorage.getItem('acctoken')
 
         };
-        const getallmaincapdata = axios.post(root_url, JSON.stringify(requestData), {
+        const getallmaincapdata = api.post("/", JSON.stringify(requestData), {
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
+            withCredentials:true
         }
         )
         Promise.all([getallmaincapdata]).then((result) => {
@@ -214,67 +193,23 @@ function ManageCurrentCap() {
     const handleadddata = (formdata) => {
         formdata.preventDefault();
         const dataupdate = { ...maindatastate.dataresdata };
-        if (!Object.keys(dataupdate).includes(tempstdcoderef.current.value)) {
-            Object.assign(dataupdate, {
-                [tempstdcoderef.current.value]: {
-                   
-                        fiscalyear: maindatastate.dataoverviewresdata.fiscalyear,
-                        typecap: maindatastate.dataoverviewresdata.typecap,
-                        stdcode: tempstdcoderef.current.value,
-                        title:temptitleref.current.value,
-                        name: tempnamecoderef.current.value,
-                        lastname: templastnamecoderef.current.value,
-                        major: tempmajorcoderef.current.value,
-                        year: tempyearcoderef.current.value
-                    
-                }
-            })
-            setmaindatastate((predata) => ({
-                ...predata,
-                dataresdata: dataupdate
-            }))
-            tempstdcoderef.current.value = '';
-            temptitleref.current.value = '';
-            tempnamecoderef.current.value = '';
-            templastnamecoderef.current.value = '';
-            tempmajorcoderef.current.value = '';
-            tempyearcoderef.current.value = '';
-        } else {
-            alert(tempstdcoderef + 'ถูกเพิ่มเข้ามาแล้ว');
-        }
-
-        // console.log(dataupdate);
+       
     }
-    // const handlemajorshowchange = (e)=>{
-    //     setMajorshow(e.target.value);
-    // }
-
 
     if (loadingpage) {
         return (
             <>
                 <Header />
-                <LinkPage />
-                <p className='w-full h-full flex justify-center items-center'>loading</p>
+                {/* <LinkPage /> */}
+                <LoadingObj/>
             </>
         )
     }
 
-    // if (maindatastate.dataresdata == {} || maindatastate.dataresdata == null) {
-    //     return (
-    //         <>
-    //             <Header />
-    //             <LinkPage />
-    //             <p className="w-full flex justify-center">เกิดข้อผิดพลาด</p>
-    //             <a onClick={()=>{navigate(-1,{replace:true})}} className="w-full flex justify-center text-red-600 cursor-pointer hover:text-red-400">กลับ</a>
-    //         </>
-    //     )
-    // }
 
 
     return (
         <>
-            {/* <p>{JSON.stringify(datalocation)}</p> */}
             <div className="w-full flex flex-col justify-center items-center ">
 
                 <div className="w-5/6 flex flex-row justify-end">
@@ -393,7 +328,7 @@ function ManageCurrentCap() {
             </div>
 
             <Header />
-            <LinkPage />
+            {/* <LinkPage /> */}
 
         </>
     )

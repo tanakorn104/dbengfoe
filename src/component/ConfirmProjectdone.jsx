@@ -11,7 +11,7 @@ import Calendar from 'react-calendar';
 import "react-multi-date-picker/styles/colors/teal.css"
 import 'react-calendar/dist/Calendar.css';
 import { data } from "autoprefixer";
-
+import api from "./tool/AxiosInstance";
 function ConfirmProjectdone() {
     const location = useLocation();
     const { datalocation } = location.state || {};
@@ -48,7 +48,27 @@ function ConfirmProjectdone() {
         }
 
     },[])
+    const now = new Date();
+    const options = {
+        year: 'numeric',
+        month: 'long',   // หรือใช้ '2-digit', 'numeric', 'short'
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        hour12: false    // ถ้าอยากได้รูปแบบ 24 ชั่วโมง
+    };
 
+    // การใช้ Intl.DateTimeFormat
+    const formattedDate = new Intl.DateTimeFormat('th-TH', options).format(now);
+    const timestmptostrdate = (timestmp) => {
+        const date = new Date(timestmp);
+        if (timestmp == null) {
+            return 'ไม่มีข้อมูล'
+        }
+        const formatdadte = date.toLocaleDateString();
+        return formatdadte;
+    }
     const handleSubmit = async (event) => {
         event.preventDefault(); // ป้องกันการรีเฟรชหน้า
         // เก็บข้อมูลฟอร์มใน state
@@ -56,13 +76,13 @@ function ConfirmProjectdone() {
         const requestData = {
             type: "updatedoneproject",//sessionStorage.getItem('statusInsertOrUpdateData')
             data: formData,
-            token: sessionStorage.getItem('acctoken')
         };
         // console.log((requestData));
-        await axios.post(root_url, JSON.stringify(requestData), {
+        await api.post("/", JSON.stringify(requestData), {
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
+            withCredentials:true
         }
         )   
             .then(() => { navigate('/manageproject',{replace:true,state:{datalocation:[datalocation.fiscalyear,datalocation.type,datalocation.organiz]}}) })
@@ -72,7 +92,13 @@ function ConfirmProjectdone() {
 
     };
 
-   
+    const handleDateChange = (event) => {
+        const { name, value } = event.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: timestmptostrdate(value),
+        }));
+    }
     const handleChange = (event) => {
         const { name, value } = event.target;
         setFormData((prevData) => ({
@@ -96,14 +122,9 @@ function ConfirmProjectdone() {
     }
 
     const [Datepicker, setDatepicker] = useState([1726358400000, 1726963200000, 1727481600000]);
-    const timestmptostrdate = (timestmp) => {
-        const date = new Date(timestmp);
-        if (timestmp == null) {
-            return 'ไม่มีข้อมูล'
-        }
-        const formatdadte = date.toLocaleDateString();
-        return formatdadte;
-    }
+    
+
+
     const numberWithCommas = (number) => {
         const formattedNumber = number.toLocaleString('th-TH',{
             minimumFractionDigits:2,
@@ -115,7 +136,7 @@ function ConfirmProjectdone() {
     return (
         <>
             <Header />
-            <LinkPage />
+            {/* <LinkPage /> */}
             <div className="w-full flex flex-col justify-center items-center p-10 ">
                 <form  method="post" onSubmit={handleSubmit} className="flex flex-col justify-between p-10 max-w-screen-lg w-full  items-center border rounded-2xl border-green-500">
                     <div className="w-full flex flex-row justify-center items-center mb-5">
@@ -139,7 +160,7 @@ function ConfirmProjectdone() {
                     {(formData.eventdate!=null&&formData.eventdate!='')?JSON.parse(formData.eventdate).map((timestamp,index)=>{
                         return (
                             <div key={uuidv4()}>
-                            <p>{timestmptostrdate(timestamp)}</p>
+                            <p>{(timestamp)}</p>
                             <p className="mx-3"></p>
                             </div>
                         )

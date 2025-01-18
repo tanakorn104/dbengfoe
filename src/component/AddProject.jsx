@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import DatePicker from "react-multi-date-picker";
 import { useEffect, useState, } from "react";
 import axios from "axios";
-import { root_url } from "./config/config";
+import api from "./tool/AxiosInstance";
 function AddProject() {
 
     const location = useLocation();
@@ -26,6 +26,7 @@ function AddProject() {
             // used: "20",
             // total: "2480",
             eventdate:null ,
+            softskilltype:null,
             // comdocdate:"2/10/2567",
             status: null,
             },
@@ -37,6 +38,27 @@ function AddProject() {
 
 
     );
+    const now = new Date();
+    const options = {
+        year: 'numeric',
+        month: 'long',   // หรือใช้ '2-digit', 'numeric', 'short'
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        hour12: false    // ถ้าอยากได้รูปแบบ 24 ชั่วโมง
+    };
+
+    // การใช้ Intl.DateTimeFormat
+    const formattedDate = new Intl.DateTimeFormat('th-TH', options).format(now);
+    const timestmptostrdate = (timestmp) => {
+        const date = new Date(timestmp);
+        if (timestmp == null) {
+            return 'ไม่มีข้อมูล'
+        }
+        const formatdadte = date.toLocaleDateString();
+        return formatdadte;
+    }
     useEffect(()=>{
         if(!datalocation||!overviewdata){
             if(sessionStorage.getItem('role')!='admin'){
@@ -60,7 +82,7 @@ function AddProject() {
                         // total: "2480",
                         eventdate:Datepicker ,
                         // comdocdate:"2/10/2567",
-                        softskilltype:'',
+                        softskilltype:'ด้านการคิดและแก้ไขปัญหา',
                         status: "wait"
                     },
                     overviewerdata:{
@@ -103,13 +125,17 @@ function AddProject() {
         // console.log(formData.maindata)
         // console.log(formData.maindata.fiscalyear)
     };
+
+
     const handleDateChange = (selectDate) => {
         setDatepicker(selectDate);
+        // console.log(JSON.stringify(selectDate));
+        // console.log((selectDate.map((timestamp)=>timestmptostrdate(timestamp))));
         setFormData((prevData) => ({
             ...prevData,
             maindata:{
                 ...prevData.maindata,
-                eventdate: JSON.stringify(selectDate),
+                eventdate: JSON.stringify(selectDate.map((timestamp)=>timestmptostrdate(timestamp))),
             }
         }));
     };
@@ -125,13 +151,14 @@ function AddProject() {
         const requestData = {
             type: "insertproject",//sessionStorage.getItem('statusInsertOrUpdateData')
             data: formData.maindata,
-            token: sessionStorage.getItem('acctoken')
+
         };
         // console.log((requestData));
-        await axios.post(root_url, JSON.stringify(requestData), {
+        await api.post("/", JSON.stringify(requestData), {
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
+            withCredentials:true
         }
         )
             .then(response => setResponse(response.data)).then(() => { navigate(-1,{replace:true},) })//{state:{datalocation:datalocation}}
@@ -163,7 +190,7 @@ function AddProject() {
         return (
             <>
                 <Header />
-                <LinkPage />
+                {/* <LinkPage /> */}
                 <div className="w-full flex flex-col justify-center items-center p-10 ">
                     <form method="post" onSubmit={handleSubmit} className="flex flex-col justify-between p-10 max-w-screen-lg w-full  items-center border rounded-2xl border-green-500">
                         <div className="w-full flex flex-row justify-center items-center mb-5 cursor-default">
@@ -178,7 +205,7 @@ function AddProject() {
                         <input onChange={handleNumberChange} type="number" step={0.01} name="projectvalue" className="w-full h-12 rounded-xl border-gray-600 " value={formData.maindata.projectvalue} placeholder='ไม่เกินยอดคงเหลือ' max={formData.overviewerdata.total} min={0} required />
                         <p className="w-full h-12 flex justify-between  items-center  mb-2 cursor-default"><span>ซอฟต์สกิล</span></p>
                         <select onChange={handleChange}  name="softskilltype" id="" className="rounded-lg h-12  cursor-pointer text-center w-full border-none  focus:outline-none focus:ring-0 " style={{border:"solid 1px gray"}}>
-                            <option value="ด้านการคิดและแก้ไขปัญหา">ด้านการคิดและแก้ไขปัญหา</option>
+                            <option value="ด้านการคิดและแก้ไขปัญหา" >ด้านการคิดและแก้ไขปัญหา</option>
                             <option value="ด้านการบริหารจัดการตัวเอง">ด้านการบริหารจัดการตัวเอง</option>
                             <option value="ด้านการทำงานร่วมกับผู้อื่น">ด้านการทำงานร่วมกับผู้อื่น</option>
                             <option value="ด้านเทคโนโลยี">ด้านเทคโนโลยี</option>
@@ -205,7 +232,7 @@ function AddProject() {
                         </div>
 
                         <button type="submit" className="w-full h-12 rounded-xl border mt-5 bg-green-500 text-white  transition-colors duration-300 hover:bg-white hover:text-black">เพิ่ม</button>
-                        <button  onClick={confirmAction} className="w-full h-12 rounded-xl border mt-5 bg-blue-500 text-white  transition-colors duration-300 hover:bg-white hover:text-black">กลับ</button>
+                        <a  onClick={confirmAction} className="w-full  flex items-center justify-center h-12 rounded-xl border mt-5 bg-blue-500 text-white  transition-colors duration-300 hover:bg-white hover:text-black">กลับ</a>
 
                     </form>
                 </div>

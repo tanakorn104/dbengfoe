@@ -5,7 +5,8 @@ import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import html2pdf from 'html2pdf.js';
 import { v4 as uuidv4 } from 'uuid';
-import { root_url } from "./config/config";
+import LoadingObj from '../assets/LoadingObj';
+import api from "./tool/AxiosInstance";
 function Overview() {
     const location = useLocation();
     const { datalocation } = location.state || {};
@@ -63,16 +64,17 @@ function Overview() {
 
             };
             // console.log((requestData));
-            axios.post(root_url, JSON.stringify(requestData), {
+            api.post("/", JSON.stringify(requestData), {
                 headers: {
                     'Content-Type': 'application/json'
-                }
+                },
+                withCredentials:true
             }
             )
                 .then(response => { setHeadtableresdata(response.data.headtable); setDataresdata(response.data.data); setLoadingpage(false) })
                 .catch(err => console.error('Error posting data', err)); // จัดการข้อผิดพลาด
 
-            console.log('Form submitted with data:',);
+            // console.log('Form submitted with data:',);
         };
         if (datalocation == null) {
             navigate(-1);
@@ -99,8 +101,8 @@ function Overview() {
         return (
             <>
                 <Header />
-                <LinkPage />
-                <p className='w-full h-full flex justify-center items-center'>loading</p>
+                {/* <LinkPage /> */}
+                <LoadingObj/>
             </>
         )
     }
@@ -109,7 +111,7 @@ function Overview() {
         return (
             <>
                 <Header />
-                <LinkPage />
+                {/* <LinkPage /> */}
                 <p className="w-full flex justify-center ">ข้อมูลองค์กรเกิดข้อมูลพลาด ขออภัย</p>
                 <a onClick={()=>{navigate(-1)}} className="w-full flex justify-center text-red-500 cursor-pointer hover:text-red-300">กลับ</a>
             </>
@@ -118,31 +120,31 @@ function Overview() {
     return (
         <>
             <Header />
-            <LinkPage />
+            {/* <LinkPage /> */}
             {/* <p>{headtableresdata}</p> */}
             {/* <p>{dataresdata}</p> */}
-            <div className="w-full flex flex-row justify-center">
+            <div className="w-full bg-green-50 flex flex-row justify-center">
                 <div className="w-5/6 flex flex-row justify-around">
-                <div className="w-1/2  "><a onClick={()=>{navigate("/managecapital",{state:{datalocation:{fiscalyear:dataresdata[0][0]}}})}} className="border-b felx felx-row items-center justify-start cursor-pointer text-start  font-light hover:text-gray-500 text-green-500">จัดการทุนการศึกษา</a></div>
-                <a className="w-1/2 felx felx-row items-center justify-end cursor-pointer text-end font-light hover:text-gray-500 " onClick={handleExport}>Download as PDF</a>
+                <div className="w-1/2  "><a onClick={()=>{navigate("/managecapital",{state:{datalocation:{fiscalyear:dataresdata[0][0]}}})}} className="border-b felx felx-row items-center justify-start cursor-pointer text-start  text-sm font-light hover:text-gray-500 text-blue-500">จัดการทุนการศึกษา</a></div>
+                <a className="w-1/2 felx felx-row items-center justify-end cursor-pointer text-end text-sm font-light hover:text-gray-500 " onClick={handleExport}>Download as PDF</a>
                 </div>
             </div>
-            <div className="w-full flex flex-col justify-center items-center" ref={contentRef} id="content-to-export">
-                <div className="w-5/6 flex flex-row justify-around mt-7">
-                    <p className="w-full text-start text-2xl  flex items-end">ข้อมูลประจำปีงบประมาณ {dataresdata[0][0]}</p>
+            <div className="w-full flex flex-col  justify-center items-center" ref={contentRef} id="content-to-export">
+                <div className="w-5/6 flex flex-col md:flex-row justify-around mt-7">
+                    <p className="w-full text-start text-2xl  flex md:justify-start items-center justify-center">ข้อมูลประจำปีงบประมาณ {dataresdata[0][0]}</p>
                     
-                    <p className="w-full text-end font-light  flex justify-end items-center" >ณ วันที่ {formattedDate}</p>
+                    <p className="w-full text-end font-light  flex md:justify-end md:items-end justify-center items-center" >ณ วันที่ {formattedDate}</p>
 
                 </div>
                 <p className="text-start w-5/6 font-bold my-5">งบพัฒนานิสิต</p>
                 <table className="w-5/6  bg-blue-200 flex flex-col">
                     <thead >
                         <tr className="w-full h-10  bg-gray-200 flex flex-row justify-between">
-                            <th className="w-1/2 font-normal   text-start pl-6 flex flex-row  items-center">หน่วยงาน</th>
-                            <div className="w-1/2  flex flex-row justify-end items-center">
-                                <th className="font-normal w-1/3 mr-3  text-end pl-6">ยอดเต็ม</th>
-                                <th className="font-normal w-1/3 mr-3  text-end pl-6">เงินผูกพัน</th>
-                                <th className="font-normal w-1/3 mr-3  text-end pl-6">คงเหลือจริง</th>
+                            <th className=" w-2/3 md:w-1/2 font-normal   text-start pl-6 flex flex-row  items-center">หน่วยงาน</th>
+                            <div className="w-1/3 md:w-1/2  flex flex-row justify-end items-center">
+                                <th className="font-normal w-1/3 hidden  md:block  text-end pl-6">ยอดเต็ม</th>
+                                <th className="font-normal w-1/3  hidden md:block text-end pl-6">เงินผูกพัน</th>
+                                <th className="font-normal w-full md:w-1/3   text-end pl-6">คงเหลือ</th>
                                 {/* <th className="font-normal w-1/3 mr-3  text-end pl-6">เพิ่มเติม</th> */}
                             </div>
                         </tr>
@@ -158,11 +160,11 @@ function Overview() {
                                     //     <th className="font-normal w-1/4 text-start pl-6">more</th>
                                     // </tr>
                                     <tr  key={uuidv4()} className="w-full h-10  flex flex-row justify-between bg-white border-b">
-                                    <a onClick={()=>{handleMorebtn([items[0],items[1],items[2]])}} className="w-1/2 font-light   text-start pl-10 flex flex-row  items-center cursor-pointer hover:text-gray-400">{items[2]}</a>
-                                    <div className="w-1/2  flex flex-row justify-end items-center">
-                                        <td  className="font-light w-1/3 mr-2  text-end pl-6 ">{numberWithCommas(items[3])}</td>
-                                        <td  className="font-light w-1/3 mr-2  text-end pl-6 ">{numberWithCommas(items[5])}</td>
-                                        <td className="font-light w-1/3 mr-2  text-end pl-6">{numberWithCommas(items[4])}</td>
+                                    <a onClick={()=>{handleMorebtn([items[0],items[1],items[2]])}} className="w-2/3 md:w-1/2 font-light   text-start pl-10  flex flex-row  items-center cursor-pointer hover:text-gray-400">{items[2]}</a>
+                                    <div className="w-1/3 md:w-1/2  flex flex-row  items-center">
+                                        <div  className="font-light w-1/3   hidden  md:block text-end  ">{numberWithCommas(items[3])}</div>
+                                        <div  className="font-light w-1/3   hidden md:block text-end  ">{numberWithCommas(items[5])}</div>
+                                        <div className="font-light w-full md:w-1/3   text-end ">{numberWithCommas(items[4])}</div>
                                         {/* <a  className="font-light w-1/3 mr-3  text-end pl-6 cursor-pointer">more</a> */}
                                     </div>
                                 </tr>
@@ -174,11 +176,11 @@ function Overview() {
                     
                     <thead >
                         <tr className="w-full h-10  bg-gray-200 flex flex-row justify-between">
-                            <th className="w-1/2 font-normal   text-start pl-6 flex flex-row  items-center">ภาควิชา</th>
-                            <div className="w-1/2  flex flex-row justify-end items-center">
-                                <th className="font-normal w-1/3 mr-3  text-end pl-6">ยอดเต็ม</th>
-                                <th className="font-normal w-1/3 mr-3  text-end pl-6">เงินผูกพัน</th>
-                                <th className="font-normal w-1/3 mr-3  text-end pl-6">คงเหลือ</th>
+                            <th className=" w-2/3 md:w-1/2 font-normal   text-start pl-6 flex flex-row  items-center">ภาควิชา</th>
+                            <div className="w-1/3 md:w-1/2  flex flex-row justify-end items-center">
+                                <th className="font-normal w-1/3  hidden md:block text-end pl-6">ยอดเต็ม</th>
+                                <th className="font-normal w-1/3  hidden md:block text-end pl-6">เงินผูกพัน</th>
+                                <th className="font-normal w-full md:w-1/3   text-end pl-6">คงเหลือ</th>
                                 {/* <th className="font-normal w-1/3 mr-3  text-end pl-6">เพิ่มเติม</th> */}
                             </div>
                         </tr>
@@ -188,11 +190,11 @@ function Overview() {
                             if (items[1] == 'งบพัฒนานิสิตภาค') {
                                 return (
                                     <tr  key={uuidv4()} className="w-full h-10  flex flex-row justify-between bg-white border-b">
-                                    <a onClick={()=>{handleMorebtn([items[0],items[1],items[2]])}} className="w-1/2 font-light   text-start pl-10 flex flex-row  items-center cursor-pointer hover:text-gray-400">{items[2]}</a>
-                                    <div className="w-1/2  flex flex-row justify-end items-center">
-                                    <td  className="font-light w-1/3 mr-2  text-end pl-6 ">{numberWithCommas(items[3])}</td>
-                                        <td  className="font-light w-1/3 mr-2  text-end pl-6 ">{numberWithCommas(items[5])}</td>
-                                        <td className="font-light w-1/3 mr-2  text-end pl-6">{numberWithCommas(items[4])}</td>
+                                    <a onClick={()=>{handleMorebtn([items[0],items[1],items[2]])}} className="w-2/3 md:w-1/2 font-light   text-start pl-10 flex flex-row  items-center cursor-pointer hover:text-gray-400">{items[2]}</a>
+                                    <div className="w-1/3 md:w-1/2  flex flex-row justify-end items-center">
+                                    <td  className="font-light w-1/3      hidden md:block  text-end  ">{numberWithCommas(items[3])}</td>
+                                        <td  className="font-light w-1/3  hidden md:block text-end  ">{numberWithCommas(items[5])}</td>
+                                        <td className="font-light w-full md:w-1/3   text-end ">{numberWithCommas(items[4])}</td>
                                         {/* <td className="font-light w-1/3 mr-3  text-end pl-6">more</td> */}
                                     </div>
                                 </tr>
@@ -206,11 +208,11 @@ function Overview() {
                 <table className="w-5/6  bg-blue-200 flex flex-col">
                 <thead >
                         <tr className="w-full h-10  bg-gray-200 flex flex-row justify-between">
-                            <th className="w-1/2 font-normal   text-start pl-6 flex flex-row  items-center">ภาควิชา</th>
-                            <div className="w-1/2  flex flex-row justify-end items-center">
-                                <th className="font-normal w-1/3 mr-3  text-end pl-6">ยอดเต็ม</th>
-                                <th className="font-normal w-1/3 mr-3  text-end pl-6">เงินผูกพัน</th>
-                                <th className="font-normal w-1/3 mr-3  text-end pl-6">คงเหลือ</th>
+                            <th className=" w-2/3 md:w-1/2 font-normal   text-start pl-6 flex flex-row  items-center">ภาควิชา</th>
+                            <div className="w-1/3 md:w-1/2  flex flex-row justify-end items-center">
+                                <th className="font-normal w-1/3  hidden md:block text-end pl-6">ยอดเต็ม</th>
+                                <th className="font-normal w-1/3  hidden md:block text-end pl-6">เงินผูกพัน</th>
+                                <th className="font-normal w-full md:w-1/3   text-end pl-6">คงเหลือ</th>
                                 {/* <th className="font-normal w-1/3 mr-3  text-end pl-6">เพิ่มเติม</th> */}
                             </div>
                         </tr>
@@ -220,11 +222,11 @@ function Overview() {
                             if (items[1] == 'รายได้ภาควิชา') {
                                 return (
                                     <tr  key={uuidv4()} className="w-full h-10  flex flex-row justify-between bg-white border-b">
-                                    <a onClick={()=>{handleMorebtn([items[0],items[1],items[2]])}} className="w-1/2 font-light   text-start pl-10 flex flex-row  items-center cursor-pointer hover:text-gray-400">{items[2]}</a>
+                                    <a onClick={()=>{handleMorebtn([items[0],items[1],items[2]])}} className="w-2/3 md:w-1/2 font-light   text-start pl-10 flex flex-row  items-center cursor-pointer hover:text-gray-400">{items[2]}</a>
                                     <div className="w-1/2  flex flex-row justify-end items-center">
-                                    <td  className="font-light w-1/3 mr-2  text-end pl-6 ">{numberWithCommas(items[3])}</td>
-                                        <td  className="font-light w-1/3 mr-2  text-end pl-6 ">{numberWithCommas(items[5])}</td>
-                                        <td className="font-light w-1/3 mr-2  text-end pl-6">{numberWithCommas(items[4])}</td>
+                                    <td  className="font-light w-1/3 md:w-1/2      hidden md:block text-end  ">{numberWithCommas(items[3])}</td>
+                                        <td  className="font-light w-1/3  hidden md:block text-end  ">{numberWithCommas(items[5])}</td>
+                                        <td className="font-light w-full md:w-1/3   text-end ">{numberWithCommas(items[4])}</td>
                                         {/* <td className="font-light w-1/3 mr-3  text-end pl-6">more</td> */}
                                     </div>
                                 </tr>
@@ -238,11 +240,11 @@ function Overview() {
                 <table className="w-5/6  bg-blue-200 flex flex-col">
                     <thead>
                     <tr className="w-full h-10  bg-gray-200 flex flex-row justify-between">
-                            <th className="w-1/2 font-normal   text-start pl-6 flex flex-row  items-center">ภาควิชา</th>
-                            <div className="w-1/2  flex flex-row justify-end items-center">
-                                <th className="font-normal w-1/3 mr-3  text-end pl-6">ยอดเต็ม</th>
-                                <th className="font-normal w-1/3 mr-3  text-end pl-6">เงินผูกพัน</th>
-                                <th className="font-normal w-1/3 mr-3  text-end pl-6">คงเหลือ</th>
+                            <th className=" w-2/3 md:w-1/2 font-normal   text-start pl-6 flex flex-row  items-center">ภาควิชา</th>
+                            <div className="w-1/3 md:w-1/2  flex flex-row justify-end items-center">
+                                <th className="font-normal w-1/3  hidden md:block text-end pl-6">ยอดเต็ม</th>
+                                <th className="font-normal w-1/3  hidden md:block text-end pl-6">เงินผูกพัน</th>
+                                <th className="font-normal w-full md:w-1/3   text-end pl-6">คงเหลือ</th>
                                 {/* <th className="font-normal w-1/3 mr-3  text-end pl-6">เพิ่มเติม</th> */}
                             </div>
                         </tr>
@@ -251,12 +253,12 @@ function Overview() {
                         {dataresdata.map((items, index) => {
                             if (items[1] == 'รายได้ภาควิชา (พิเศษ)') {
                                 return (
-                                    <tr  key={uuidv4()} className="w-full h-10  flex flex-row justify-between bg-white border-b">
-                                    <a onClick={()=>{handleMorebtn([items[0],items[1],items[2]])}} className="w-1/2 font-light   text-start pl-10 flex flex-row  items-center cursor-pointer hover:text-gray-400">{items[2]}</a>
-                                    <div className="w-1/2  flex flex-row justify-end items-center">
-                                    <td  className="font-light w-1/3 mr-2  text-end pl-6 ">{numberWithCommas(items[3])}</td>
-                                        <td  className="font-light w-1/3 mr-2  text-end pl-6 ">{numberWithCommas(items[5])}</td>
-                                        <td className="font-light w-1/3 mr-2  text-end pl-6">{numberWithCommas(items[4])}</td>
+                                    <tr  key={uuidv4()} className="w-full h-auto min-h-10 flex flex-row justify-between bg-white border-b">
+                                    <a onClick={()=>{handleMorebtn([items[0],items[1],items[2]])}} className="w-2/3 md:w-1/2 font-light   text-start pl-10 flex flex-row  items-center cursor-pointer hover:text-gray-400">{items[2]}</a>
+                                    <div className="w-1/3 md:w-1/2  flex flex-row justify-end items-center">
+                                    <td  className="font-light w-1/3      hidden md:block text-end  ">{numberWithCommas(items[3])}</td>
+                                        <td  className="font-light w-1/3 hidden md:block text-end  ">{numberWithCommas(items[5])}</td>
+                                        <td className="font-light   w-full md:w-1/3 text-end ">{numberWithCommas(items[4])}</td>
                                         {/* <td className="font-light w-1/3 mr-3  text-end pl-6">more</td> */}
                                     </div>
                                 </tr>

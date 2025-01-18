@@ -1,20 +1,42 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext,useEffect, useState, useContext,useRef } from 'react';
 
-const DataContext = createContext();
+export const AuthandDataContext = createContext();
 
-const DataContextProvider = ({ children }) => {
+export const AuthandDataContextProvider = ({ children }) => {
     // const data = localStorage.getItem('userdata');
-    const [datastatus, setStatusPage] = useState({statuspage:"r",message:"เพิ่มข้อมูลสำเร็จ"});
+    const [userdata, setUserData] = useState(null);
+    const [isLogin, setisLogin] = useState(false);
+    const intervalRefRedfreshtoken = useRef(null);;
+    // {
+    //     profiledata:null,
+    //     rank:null
+    // }
+    const setIntervalrefreshtokenID = (intervalId) => {
+        intervalRefRedfreshtoken.current = intervalId;
+    };
 
+    // ฟังก์ชันล้าง interval
+    const clearRefreshTokenInterval = () => {
+        if (intervalRefRedfreshtoken.current) {
+            clearInterval(intervalRefRedfreshtoken.current);
+            intervalRefRedfreshtoken.current = null;
+            // console.log("Interval cleared.");
+        }
+    };
+    const startchecktoken = ()=>{
+        // const id = setInterval(()=>{
+        //     console.log("checktoken2");
+        // },5000)
+        // setIntervalchecktokenID(id);
+    }
 
 
     return (
-        <DataContext.Provider value={{datastatus,setStatusPage}}>
+        <AuthandDataContext.Provider value={{userdata,setUserData,clearRefreshTokenInterval,setIntervalrefreshtokenID}}>
             {children}
-        </DataContext.Provider>
+        </AuthandDataContext.Provider>
     );
 };
 
-export  {DataContext,DataContextProvider};
 
 

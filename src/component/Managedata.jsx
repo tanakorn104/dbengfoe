@@ -6,7 +6,6 @@ import { Link, useNavigate } from "react-router-dom";
 import Adddata from './Adddata';
 import Aleart from './Aleart';
 import DisplayCardData from './DisplayCardData';
-import { root_url } from "./config/config";
 function Managedata(){
 
     const navigate = useNavigate();
@@ -17,9 +16,11 @@ function Managedata(){
     },[])
     return (
         <>  
+        <div className="">
         <Header />
-        <LinkPage/>
+        {/* <LinkPage/> */}
         <DisplayCardData/>
+        </div>
         {/* <Aleart/> */}
             
             

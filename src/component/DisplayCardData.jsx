@@ -3,7 +3,10 @@ import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import { Link } from "react-router-dom";
-import { root_url } from "./config/config";
+import LoadingObj from '../assets/LoadingObj';
+import api from './tool/AxiosInstance';
+
+
 
 function DisplayCardData() {
     const [forrerendercom, setforrerendercom] = useState(0);//refresh เมื่อกดปุ่มลบ
@@ -108,28 +111,30 @@ function DisplayCardData() {
         if (sessionStorage.getItem('role') != 'admin') {
             navigate("/Dashboard");
         }
-        const getalldata = () => {
-            setLoadingpage(true);
-            // เก็บข้อมูลฟอร์มใน state
-            // sessionStorage.setItem('statusInsertOrUpdateData','insert');
-            const requestData = {
-                type: "getallmain",//sessionStorage.getItem('statusInsertOrUpdateData')
-                data: {},
-                token: sessionStorage.getItem('acctoken')
 
-            };
-            // console.log((requestData));
-            axios.post(root_url, JSON.stringify(requestData), {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }
-            )
-                .then(response => { setHeadtableresdata(response.data.headtable); setDataresdata(response.data.data); setLoadingpage(false); })
-                .catch(err => console.error('Error posting data', err)); // จัดการข้อผิดพลาด
+        setLoadingpage(true);
+        // เก็บข้อมูลฟอร์มใน state
+        // sessionStorage.setItem('statusInsertOrUpdateData','insert');
+        const requestData = {
+            type: "getallmain",//sessionStorage.getItem('statusInsertOrUpdateData')
+            data: {
+                
+            },
 
         };
-        getalldata()
+        // console.log((requestData));
+        api.post("/", JSON.stringify(requestData), {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            withCredentials: true
+        }
+        )
+            .then(response => { setHeadtableresdata(response.data.headtable); setDataresdata(response.data.data); setLoadingpage(false); })
+            .catch(err => console.error('Error posting data', err)); // จัดการข้อผิดพลาด
+
+
+
     }, [forrerendercom])
 
     const handledel = async (primary) => {
@@ -140,14 +145,14 @@ function DisplayCardData() {
                 data: {
                     primarykey: primary
                 },
-                token: sessionStorage.getItem('acctoken')
 
             };
             console.log((requestData));
-            await axios.post(root_url, JSON.stringify(requestData), {
+            await api.post("/", JSON.stringify(requestData), {
                 headers: {
                     'Content-Type': 'application/json'
-                }
+                },
+                withCredentials: true
             }
             )
                 .then(response => { setforrerendercom(forrerendercom + 1); console.log(response) })
@@ -165,7 +170,9 @@ function DisplayCardData() {
     if (loadingpage) {
         return (
             <>
-                <p className='w-full h-full flex justify-center items-center'>loading</p>
+                {/* <p className='w-full h-full flex justify-center items-center'>loading</p> */}
+                <LoadingObj />
+
             </>
         )
     }
@@ -186,12 +193,12 @@ function DisplayCardData() {
             <div className="   h-full flex flex-col justify-center items-center  ">
                 <div className="mb-5 border-b">ข้อมูลทั้งหมด</div>
                 {dataresdata.map((obj, index) => (
-                    <div key={uuidv4()} className="max-w-screen-lg card h-14 w-3/4 bg-white p-5 my-2  border-2 rounded-3xl flex felx-col justify-between items-center">
-                        <p className='font-bold'>{obj[0]}</p>
-                        <div className=" flex flex-row h-6 max-w-screen-sm w-full justify-end">
-                            <a onClick={() => { handleMorebtn(obj[0]) }} className='cursor-pointer w-1/6 h-full  bg-blue-300 hover:bg-blue-400 ml-3 flex justify-center items-center rounded-md'>ดูเพิ่มเติม</a>
-                            <a onClick={() => selectupdatehandle(index)} className='cursor-pointer w-1/6 h-full  bg-yellow-300 hover:bg-yellow-400 ml-3 flex justify-center items-center rounded-md'>แก้ไข</a>
-                            <a onClick={() => handledel(obj[0])} className='cursor-pointer w-1/6 h-full  bg-red-300 hover:bg-red-400 ml-3 flex justify-center items-center rounded-md'>ลบ</a>
+                    <div key={uuidv4()} className="max-w-screen-lg  card h-32 md:h-14 w-3/4 bg-white p-5 my-2  border-2 rounded-3xl flex flex-col md:flex-row justify-between items-center">
+                        <p className='font-bold w-full flex justify-center md:justify-start'>{obj[0]}</p>
+                        <div className=" flex flex-row h-6 max-w-screen-sm   w-full justify-around md:justify-end">
+                            <a onClick={() => { handleMorebtn(obj[0]) }} className='text-sm md:text-base cursor-pointer w-1/3 md:w-1/3 h-full  bg-blue-300 hover:bg-blue-400 ml-3 flex justify-center items-center rounded-md'>ดูเพิ่มเติม</a>
+                            <a onClick={() => selectupdatehandle(index)} className='text-sm md:text-base cursor-pointer w-1/3 md:w-1/3 h-full  bg-yellow-300 hover:bg-yellow-400 ml-3 flex justify-center items-center rounded-md'>แก้ไข</a>
+                            <a onClick={() => handledel(obj[0])} className='text-sm md:text-base cursor-pointer w-1/3 md:w-1/3 h-full  bg-red-300 hover:bg-red-400 ml-3 flex justify-center items-center rounded-md'>ลบ</a>
                         </div>
                     </div>
                 ))}

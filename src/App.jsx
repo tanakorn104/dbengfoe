@@ -2,11 +2,9 @@ import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import { GoogleLogin, GoogleLogout } from 'react-google-login'
 import { gapi } from 'gapi-script'
 
 import Header from "./component/Header"
-import DisplayData from "./component/DisplayData"
 // import { useAuth } from './component/AuthContext'
 import { Link } from "react-router-dom";
 function App() {

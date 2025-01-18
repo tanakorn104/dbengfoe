@@ -7,7 +7,8 @@ import axios from "axios";
 import html2pdf from 'html2pdf.js';
 import { v4 as uuidv4 } from 'uuid';
 import { Link } from "react-router-dom";
-import { root_url } from "../config/config";
+import LoadingObj from "../../assets/LoadingObj";
+import api from "../tool/AxiosInstance";
 function ManageExternalCap(){
     const location = useLocation();
     const { datalocation } = location.state || 'none';
@@ -86,7 +87,7 @@ function ManageExternalCap(){
             token: sessionStorage.getItem('acctoken')
         };
         // console.log((requestData));
-        await axios.post(root_url,JSON.stringify(requestData),{
+        await api.post("/",JSON.stringify(requestData),{
                 headers:{
                     'Content-Type':'application/json'
                 }
@@ -217,13 +218,13 @@ function ManageExternalCap(){
                 fiscalyear: datalocation.fiscalyear,
                 typecap:datalocation.type,
             },
-            token: sessionStorage.getItem('acctoken')
 
         };
-        const getallmaincapdata = axios.post(root_url, JSON.stringify(requestData), {
+        const getallmaincapdata = api.post("/", JSON.stringify(requestData), {
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
+            withCredentials:true
         }
         )
         Promise.all([getallmaincapdata]).then((result) => {
@@ -300,8 +301,8 @@ function ManageExternalCap(){
         return (
             <>
                 <Header />
-                <LinkPage />
-                <p className='w-full h-full flex justify-center items-center'>loading</p>
+                {/* <LinkPage /> */}
+                <LoadingObj/>
             </>
         )
     }
@@ -309,7 +310,7 @@ function ManageExternalCap(){
         return (
             <>
                 <Header />
-                <LinkPage />
+                {/* <LinkPage /> */}
                 <p className='w-full h-full flex justify-center items-center'>{someerror}</p>
             </>
         )
@@ -318,7 +319,7 @@ function ManageExternalCap(){
     //     return (
     //         <>
     //             <Header />
-    //             <LinkPage />
+                // <LinkPage />
     //             <p className='w-full h-full flex justify-center items-center'>ยังไม่มีข้อมูลใดๆ</p>
     //         </>
     //     )
@@ -455,3 +456,8 @@ function ManageExternalCap(){
 
 
 export default ManageExternalCap
+
+
+
+
+
