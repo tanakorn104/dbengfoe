@@ -3,7 +3,6 @@ import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import Header from "./Header";
 import LinkPage from "./LinkPage";
-import { root_url } from "./config/config";
 import api from "./tool/AxiosInstance";
 function UpdateData() {
     const navigate = useNavigate();

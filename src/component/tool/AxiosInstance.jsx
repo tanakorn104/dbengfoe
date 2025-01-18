@@ -11,7 +11,7 @@ api.interceptors.request.use(
     async (config)=>{
         try{
             if(sessionStorage.getItem('profiledata')){
-                const userdata = await axios.get(`${import.meta.env.VITE_Base_SERVER_URL}/auth/checkmycookieAndtoken`,{withCredentials:true});
+                const userdata = await axios.get(`${import.meta.env.VITE_Base_SERVER_URL}/auth/checkmycookieandtoken`,{withCredentials:true});
 
             }else{
                 // window.location.href = "/GuestUserOut"

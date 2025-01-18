@@ -12,7 +12,6 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'rec
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { root_url } from "../config/config";
 import api from "../tool/AxiosInstance";
 function ViewerDashboard() {
     const location = useLocation();
