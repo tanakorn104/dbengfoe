@@ -71,6 +71,8 @@ function ViewerPaymentlog() {
             data: {
                 fiscalyear: datalocation.fiscalyearshow,
             },
+            acc: sessionStorage.getItem('acctoken'),
+            role:sessionStorage.getItem('role')
 
         };
         api.post("/", JSON.stringify(requestData), {

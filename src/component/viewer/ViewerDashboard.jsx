@@ -210,7 +210,8 @@ function ViewerDashboard() {
             data: {
 
             },
-            token: sessionStorage.getItem('acctoken')
+            acc: sessionStorage.getItem('acctoken'),
+            role:sessionStorage.getItem('role')
 
         };
         const getallmaincapdata = api.post("/", JSON.stringify(requestDataOverview), {
@@ -225,7 +226,8 @@ function ViewerDashboard() {
             data: {
 
             },
-            token: sessionStorage.getItem('acctoken')
+            acc: sessionStorage.getItem('acctoken'),
+            role:sessionStorage.getItem('role')
 
         };
         const getallprojectdata = api.post("/", JSON.stringify(requestDataProject), {
@@ -240,7 +242,8 @@ function ViewerDashboard() {
             data: {
 
             },
-            token: sessionStorage.getItem('acctoken')
+            acc: sessionStorage.getItem('acctoken'),
+            role:sessionStorage.getItem('role')
 
         };
         const getallmaincap = api.post("/", JSON.stringify(requestmaincap), {
@@ -255,7 +258,8 @@ function ViewerDashboard() {
             data: {
 
             },
-            token: sessionStorage.getItem('acctoken')
+            acc: sessionStorage.getItem('acctoken'),
+            role:sessionStorage.getItem('role')
 
         };
         const getallcurrentcap = api.post("/", JSON.stringify(requestDatatempcap), {
@@ -406,7 +410,7 @@ function ViewerDashboard() {
         return (
             <>
                 <Header />
-                {sessionStorage.getItem('role') == 'admin' ? <LinkPage /> : ''}
+                {/* {sessionStorage.getItem('role') == 'admin' ? <LinkPage /> : ''} */}
                 <p className='w-full h-full flex justify-center items-center'>loading</p>
             </>
         )
@@ -415,7 +419,7 @@ function ViewerDashboard() {
         return (
             <>
                 <Header />
-                {sessionStorage.getItem('role') == 'admin' ? <LinkPage /> : ''}
+                {/* {sessionStorage.getItem('role') == 'admin' ? <LinkPage /> : ''} */}
                 <p className='w-full h-full flex justify-center items-center'>ยังไม่มีข้อมูลใด</p>
                 <p className='w-full h-full flex justify-center items-center text-red-500'>กรุณา ติดต่อผู้ดูแลระบบ</p>
             </>
@@ -426,7 +430,7 @@ function ViewerDashboard() {
         <>
             <Header />
 
-            {sessionStorage.getItem('role') == 'admin' ? <LinkPage /> : ''}
+            {/* {sessionStorage.getItem('role') == 'admin' ? <LinkPage /> : ''} */}
 
             <div className="w-full  flex flex-col justify-center items-center ">
                 {/* {maindatastate.Overviewdata.overviewdata} */}

@@ -128,6 +128,8 @@ function ViewerProject() {
                     type: datalocation[1],
                     organiz: datalocation[2],
                 },
+                acc: sessionStorage.getItem('acctoken'),
+                role:sessionStorage.getItem('role')
 
             };
             // console.log((requestData));
@@ -154,6 +156,8 @@ function ViewerProject() {
                     type: datalocation[1],
                     organiz: datalocation[2],
                 },
+                acc: sessionStorage.getItem('acctoken'),
+                role:sessionStorage.getItem('role')
 
             };
             // console.log((requestData));

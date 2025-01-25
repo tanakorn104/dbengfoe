@@ -58,7 +58,7 @@ function Header() {
       </div>
       {/* <LinkPage/> */}
       {/* {console.log(rank)} */}
-      {rank == 'admin' ? <LinkPage  /> : ''}
+      {/* {rank == 'admin' ? <LinkPage  /> : ''} */}
 
     </> : <>
       <div className="z-50 w-full h-20  flex flex-row justify-between  items-center p-6 drop-shadow-md fixed bg-white  inset-0">

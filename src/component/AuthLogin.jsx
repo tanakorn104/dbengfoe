@@ -14,6 +14,7 @@ function AuthLogin() {
         try{
             const response = await axios.get(`${import.meta.env.VITE_Base_SERVER_URL}/auth/refreshtoken`, { withCredentials: true });
         //   console.log('Token refreshed:', response.data);
+        sessionStorage.setItem('acctoken', response.data.token);
 
         }catch(e){
             window.location.href = "/TimeOut"
@@ -38,7 +39,7 @@ function AuthLogin() {
                     return;
                 }
                 sessionStorage.setItem('profiledata', JSON.stringify(payload.profile));
-                // sessionStorage.setItem('res', JSON.stringify(res));
+                sessionStorage.setItem('acctoken', payload.acc);
                 sessionStorage.setItem('role', payload.rank);
                 const intervalId = startchecktoken();
                 setIntervalrefreshtokenID(intervalId);

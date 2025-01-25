@@ -26,6 +26,7 @@ function Logout() {
                 .then(response => {
                   sessionStorage.removeItem('profiledata');
                   sessionStorage.removeItem('role');
+                  sessionStorage.removeItem('acc');
                 }).then(()=>{
                     setStatus('ออกจากระบบสำเร็จ')
                     clearRefreshTokenInterval()

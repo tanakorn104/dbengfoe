@@ -20,6 +20,7 @@
     "@tailwindcss/forms": "^0.5.9",
     "axios": "^1.7.7",
     "dayjs": "^1.11.13",
+    "fs": "^0.0.1-security",
     "gapi-script": "^1.2.0",
     "google-auth-library": "^9.14.1",
     "html2pdf.js": "^0.10.2",

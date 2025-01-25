@@ -17,7 +17,7 @@ import { Navigate, useNavigate ,useLocation } from 'react-router-dom'
     
   return (
     <Menu as="div" className=" z-50 inline-block text-center w-full fixed top-20">
-      <div>
+      {/* <div>
         <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-none bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
           <p className='cursor-pointer font-medium'>{location.pathname.split("/").pop().toUpperCase()||'Dashboard'}</p>
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="-mr-1 h-5 w-5 text-gray-400">
@@ -51,7 +51,7 @@ import { Navigate, useNavigate ,useLocation } from 'react-router-dom'
             </a>
           </MenuItem>
         </div>
-      </MenuItems>
+      </MenuItems> */}
     </Menu>
   )
 }
